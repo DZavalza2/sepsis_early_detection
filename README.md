@@ -11,7 +11,7 @@ Our team aims to build on the bridge between advanced data science methods and t
 - Mentored by Professor Kyle Shannon: [kshannon@ucsd.edu](mailto:kshannon@ucsd.edu)
 
 ## Purpose
-The capstone project aims to apply data science techniques to critical care data, specifically focusing on multimorbidity states in organ dysfunction and sepsis. By replicating the study from Zador et al., we intend to validate the findings and potentially uncover new insights through the application of Latent Class Analysis (LCA) and other machine learning methods.
+The capstone project aims to apply advanced data science techniques to critical health care data, specifically focusing on detecting sepsis in patients before any current methods for diagnosing patients. By finding an accurate probability of a patients risk of obtaining sepsis after later, health care professional are able to effectively treat and potentially lower a patients chances of death. Since no model is ever perfect, this software is expected to be used in  conjunction with health care workers experienced knowledge and protocols. 
 
 ## Accessing the Data
 To access the MIMIC-III database:
