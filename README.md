@@ -23,10 +23,9 @@ To access the MIMIC-III database:
 Set up the MIMIC-III database in pgAdmin by following the tutorial provided by the MIT Laboratory for Computational Physiology: [Setting up MIMIC-III in a local Postgres database](https://github.com/MIT-LCP/mimic-code/blob/main/mimic-iii/buildmimic/postgres/README.md).
 
 ## Data Preparation
-### Loading Data into the Local Database
-After downloading the data files from the MIMIC-III database, place them in the `raw_data` folder in this repository. The `raw_data` folder is structured to organize the data as downloaded from MIMIC-III. This helps in maintaining consistency and ease of access for further processing. Ensure that the file structure within `raw_data` matches what the processing scripts expect. For instance, if the scripts expect certain CSV files, place those files directly in the `raw_data` folder. If there are specific naming conventions or directory structures that need to be followed for the raw data files, specify them here.
+After downloading the data files from the MIMIC-III database, you will have to do some data cleaning to get the same subset of data we are using. Your best resouce for this is going to be looking at the `extract.sql` file and `merge.ipynb`. In the `extract.sql` file, we provide the queries we used to extract the vital signs from the entire database. Similarly, `merge.ipynb` provides a comprehensive python notebook which guides readers through cleaning up the messy data from the database extraction. Using these two guiding files, users should be able to recreate our subset of data we are using for our model.
 
 ## Data Processing
-The `processed_data` folder contains scripts for preprocessing the raw data from MIMIC-III. Run the scripts in the following order to prepare your data for analysis:
+**To implement still**
 
-- To implement still
+## 
