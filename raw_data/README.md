@@ -9,6 +9,8 @@ The repository is organized and used in the following:
 
 `merge.ipynb` - Contains python code walking viewers through merging all patient data gathered from the sql queries above according to the appropriate time and patient information.
 
+`merge_vital_signs.py` - Python function taking all csv files for the vital signs and merging them into a single larger dataset.
+
 `HeartRate_clean.csv` - DataFrame containing patients id and their hourly heart rate. Used to merge into merged.csv with all other hourly vital signs. 
 
 `RR_clean.csv` - DataFrame containing patients id and their hourly respitory rate. Used to merge into merged.csv with all other hourly vital signs. 
@@ -18,4 +20,6 @@ The repository is organized and used in the following:
 `temp_clean.csv` - DataFrame containing patients id and their hourly temperatures. Used to merge into merged.csv with all other hourly vital signs. 
 
 `merged.csv` - Final DataFrame with patients id's and their hourly vital signs.  
+
+
 
