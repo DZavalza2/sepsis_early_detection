@@ -25,7 +25,6 @@ def create_feature_labels(data, sequence_length, num_hours_ahead):
             labels.append(label)
             
         return np.array(sequences), np.array(labels)
-    
     gss = GroupShuffleSplit(test_size=0.2, n_splits=1, random_state=42)
     train_inds, test_inds = next(gss.split(df, groups=df['subject_id']))
 
