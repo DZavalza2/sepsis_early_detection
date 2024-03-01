@@ -3,20 +3,14 @@
 
 # In[4]:
 
-
-import pandas as pd
-import numpy as np
-import seaborn as sns
-import matplotlib.pyplot as plt
-from sklearn.model_selection import GroupShuffleSplit
-from sklearn.preprocessing import StandardScaler
-
-
-# In[5]:
-
-
+# Suppress warnings
 import warnings
 warnings.filterwarnings('ignore')
+# Import necessary libraries
+import pandas as pd
+import numpy as np
+from sklearn.model_selection import train_test_split, GroupShuffleSplit
+from sklearn.preprocessing import StandardScaler
 
 
 # In[6]:
@@ -65,57 +59,63 @@ def create_sequences_and_labels(data, sequence_length, num_hours_ahead):
     return np.array(sequences), np.array(labels)
 
 
-# In[18]:
+# Split subjects into training, validation, and test groups first
+unique_subjects = df['subject_id'].unique()
+train_subjects, temp_subjects = train_test_split(unique_subjects, test_size=0.4, random_state=42)
+val_subjects, test_subjects = train_test_split(temp_subjects, test_size=0.5, random_state=42)
 
+# Split DataFrame based on subjects
+train_data = df[df['subject_id'].isin(train_subjects)]
+val_data = df[df['subject_id'].isin(val_subjects)]
+test_data = df[df['subject_id'].isin(test_subjects)]
 
-# Assuming the initial split into train_data and test_data is done
-gss_val = GroupShuffleSplit(test_size=0.25, n_splits=1, random_state=42)  
-# Create validation set from training data
-train_inds, val_inds = next(gss_val.split(train_data, groups=train_data['subject_id']))
-
-new_train_data = train_data.iloc[train_inds]
-val_data = train_data.iloc[val_inds]
-
-# Initialize the scaler
+# Initialize the scaler and scale features for each dataset
 scaler = StandardScaler()
+train_features = train_data[['temp', 'WBC', 'HeartRate', 'RR']]
+scaler.fit(train_features)  # Fit on training data only
 
-# Scale features for the entire dataset before splitting into sequences
-# This assumes the features are similar across all sets and can be scaled in one go
-# Note: This is a simplification and may not always be the best approach. Consider scaling within each subject loop if data distributions vary significantly by subject.
-all_data = pd.concat([new_train_data, val_data, test_data])
-all_features_scaled = scaler.fit_transform(all_data[['temp', 'WBC', 'HeartRate', 'RR']])
-all_data.loc[:, ['temp', 'WBC', 'HeartRate', 'RR']] = all_features_scaled
+# Apply scaling
+train_data.loc[:, ['temp', 'WBC', 'HeartRate', 'RR']] = scaler.transform(train_features)
+val_data.loc[:, ['temp', 'WBC', 'HeartRate', 'RR']] = scaler.transform(val_data[['temp', 'WBC', 'HeartRate', 'RR']])
+test_data.loc[:, ['temp', 'WBC', 'HeartRate', 'RR']] = scaler.transform(test_data[['temp', 'WBC', 'HeartRate', 'RR']])
 
-# Split the scaled data back
-new_train_data = all_data.iloc[:len(new_train_data)]
-val_data = all_data.iloc[len(new_train_data):len(new_train_data) + len(val_data)]
-test_data = all_data.iloc[-len(test_data):]
-
-# Initialize lists to hold sequences and labels
+# Initialize lists for sequences and labels
 X_train, y_train = [], []
 X_val, y_val = [], []
 X_test, y_test = [], []
 
-# Create sequences and labels for the new training data
-for subject_id in new_train_data['subject_id'].unique():
-    subject_data = new_train_data[new_train_data['subject_id'] == subject_id]
+# Create sequences and labels for the training data
+for subject_id in train_data['subject_id'].unique():
+    subject_data = train_data[train_data['subject_id'] == subject_id]
     subject_sequences, subject_labels = create_sequences_and_labels(subject_data, sequence_length, num_hours_ahead)
     X_train.extend(subject_sequences)
     y_train.extend(subject_labels)
 
-# Create sequences and labels for validation data
+# Repeat for validation and test data
 for subject_id in val_data['subject_id'].unique():
     subject_data = val_data[val_data['subject_id'] == subject_id]
     subject_sequences, subject_labels = create_sequences_and_labels(subject_data, sequence_length, num_hours_ahead)
     X_val.extend(subject_sequences)
     y_val.extend(subject_labels)
 
-# Create sequences and labels for test data
 for subject_id in test_data['subject_id'].unique():
     subject_data = test_data[test_data['subject_id'] == subject_id]
     subject_sequences, subject_labels = create_sequences_and_labels(subject_data, sequence_length, num_hours_ahead)
     X_test.extend(subject_sequences)
     y_test.extend(subject_labels)
+
+# Optionally, convert lists to arrays
+X_train, y_train = np.array(X_train), np.array(y_train)
+X_val, y_val = np.array(X_val), np.array(y_val)
+X_test, y_test = np.array(X_test), np.array(y_test)
+
+# Convert lists to numpy arrays
+X_train = np.array(X_train)
+y_train = np.array(y_train)
+X_val = np.array(X_val)
+y_val = np.array(y_val)
+X_test = np.array(X_test)
+y_test = np.array(y_test)
 
 # Convert lists to numpy arrays
 X_train = np.array(X_train)
